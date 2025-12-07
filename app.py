@@ -48,7 +48,7 @@ def build_prompt_overlay(positive_prompt, negative_prompt):
     )
 
     return f"""
-<div class="prompt-overlay">
+<div class="prompt-overlay-inner">
   <div class="prompt-overlay__panel">
     <div class="prompt-section">
       <div class="prompt-section__title">Positive Prompt</div>
@@ -141,9 +141,10 @@ ASPECTS = [
 custom_css = """
 .gradio-container { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
 #image-preview-wrapper { position: relative; }
-.prompt-overlay { position: absolute; inset: 0; padding: 12px; display: flex; pointer-events: none; opacity: 0; transition: opacity 0.18s ease-in-out; z-index: 20; }
-#image-preview-wrapper:hover .prompt-overlay { opacity: 1; pointer-events: auto; }
-.prompt-overlay__panel { background: rgba(7, 11, 23, 0.94); color: #e2e8f0; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; width: min(420px, 80vw); max-height: 70vh; overflow: auto; box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
+#prompt-overlay { position: absolute; inset: 0; pointer-events: none; display: block; z-index: 30; }
+#prompt-overlay .prompt-overlay-inner { width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: flex-start; padding: 12px; opacity: 0; transition: opacity 0.18s ease-in-out; }
+#image-preview-wrapper:hover #prompt-overlay .prompt-overlay-inner { opacity: 1; }
+#prompt-overlay .prompt-overlay__panel { background: rgba(7, 11, 23, 0.76); color: #e2e8f0; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; width: min(420px, 80vw); max-height: 70vh; overflow: auto; box-shadow: 0 18px 40px rgba(0,0,0,0.45); backdrop-filter: blur(4px); pointer-events: auto; }
 .prompt-section { padding: 10px 0; border-top: 1px solid #1f2a44; }
 .prompt-section:first-of-type { border-top: none; padding-top: 0; }
 .prompt-section__title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: #9cc4ff; }
@@ -184,7 +185,7 @@ with gr.Blocks() as demo:
         download_image=gr.File(label="Download Image")
         with gr.Group(elem_id="image-preview-wrapper"):
             output_img = gr.Image(label="Generated Image", height=480, show_label=True)
-            prompt_overlay = gr.HTML("", elem_id="prompt-overlay")
+            prompt_overlay = gr.HTML("", elem_id="prompt-overlay", container=False)
         used_seed = gr.Textbox(label="Seed Used", interactive=False,show_copy_button=True)
 
     run.click(
