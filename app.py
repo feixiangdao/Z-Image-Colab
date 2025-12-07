@@ -152,7 +152,7 @@ custom_css = """
 .copy-btn:hover { filter: brightness(1.05); }
 """
 
-with gr.Blocks(theme=gr.themes.Soft(),css=custom_css) as demo:
+with gr.Blocks() as demo:
   gr.HTML("""
 <div style=\"width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:20px 0;\">
     <h1 style=\"font-size:2.5em; margin-bottom:10px;\">Z-Image-Turbo</h1>
@@ -193,4 +193,4 @@ with gr.Blocks(theme=gr.themes.Soft(),css=custom_css) as demo:
         outputs=[download_image,output_img, used_seed, prompt_overlay]
     )
 
-demo.launch(share=True, debug=True)
+demo.launch(share=True, debug=True, theme=gr.themes.Soft(), css=custom_css)
