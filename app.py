@@ -6,7 +6,7 @@ import os, random, time
 import torch
 import numpy as np
 from PIL import Image
-import re, uuid, html
+import re, uuid
 from nodes import NODE_CLASS_MAPPINGS
 
 UNETLoader = NODE_CLASS_MAPPINGS["UNETLoader"]()
@@ -31,34 +31,6 @@ def get_save_path(prompt):
   filename = f"{safe_prompt}_{uid}.png"
   path = os.path.join(save_dir, filename)
   return path
-
-def build_prompt_overlay(positive_prompt, negative_prompt):
-    positive_html = html.escape(positive_prompt or "")
-    negative_html = html.escape(negative_prompt or "")
-    negative_section = (
-        f"""
-        <div class="prompt-section">
-            <div class="prompt-section__title">Negative Prompt</div>
-            <pre>{negative_html}</pre>
-            <button type="button" class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)">Copy</button>
-        </div>
-        """
-        if negative_prompt and negative_prompt.strip()
-        else ""
-    )
-
-    return f"""
-<div class="prompt-overlay-inner">
-  <div class="prompt-overlay__panel">
-    <div class="prompt-section">
-      <div class="prompt-section__title">Positive Prompt</div>
-      <pre>{positive_html}</pre>
-      <button type="button" class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)">Copy</button>
-    </div>
-    {negative_section}
-  </div>
-</div>
-"""
 
 @torch.inference_mode()
 def generate(input):
@@ -120,8 +92,7 @@ def generate_ui(
     }
 
     image_path,seed = generate(input_data)
-    prompt_overlay_html = build_prompt_overlay(positive_prompt, negative_prompt)
-    return image_path,image_path,seed,prompt_overlay_html
+    return image_path,image_path,seed
 
 
 
@@ -140,20 +111,7 @@ ASPECTS = [
 
 custom_css = """
 .gradio-container { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
-#image-preview-wrapper { position: relative !important; }
-#image-preview-wrapper .styler { position: relative !important; overflow: visible !important; }
-#prompt-overlay { position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100% !important; height: 100% !important; pointer-events: none; display: block; z-index: 30; margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important; overflow: visible !important; }
-#prompt-overlay .html-container, #prompt-overlay .prose { height: 100%; padding: 0 !important; margin: 0 !important; background: transparent !important; }
-#prompt-overlay .prompt-overlay-inner { width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: flex-start; padding: 12px; opacity: 0; transition: opacity 0.18s ease-in-out; }
-#image-preview-wrapper:hover #prompt-overlay { pointer-events: auto; }
-#image-preview-wrapper:hover #prompt-overlay .prompt-overlay-inner { opacity: 1; }
-#prompt-overlay .prompt-overlay__panel { background: rgba(7, 11, 23, 0.76); color: #e2e8f0; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; width: min(420px, 80vw); max-height: 70vh; overflow: auto; box-shadow: 0 18px 40px rgba(0,0,0,0.45); backdrop-filter: blur(4px); pointer-events: auto; }
-.prompt-section { padding: 10px 0; border-top: 1px solid #1f2a44; }
-.prompt-section:first-of-type { border-top: none; padding-top: 0; }
-.prompt-section__title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: #9cc4ff; }
-#prompt-overlay pre { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px 0; max-height: 220px; overflow: auto; background: #0f172a; padding: 8px; border-radius: 8px; border: 1px solid #1e293b; }
-.copy-btn { background: linear-gradient(90deg, #2563eb, #38bdf8); color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: 700; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35); }
-.copy-btn:hover { filter: brightness(1.05); }
+#image-preview-wrapper { position: relative; }
 """
 
 with gr.Blocks() as demo:
@@ -189,13 +147,13 @@ with gr.Blocks() as demo:
         download_image=gr.File(label="Download Image")
         with gr.Group(elem_id="image-preview-wrapper"):
             output_img = gr.Image(label="Generated Image", height=480, show_label=True)
-            prompt_overlay = gr.HTML("", elem_id="prompt-overlay", container=False)
         used_seed = gr.Textbox(label="Seed Used", interactive=False,show_copy_button=True)
 
     run.click(
         fn=generate_ui,
         inputs=[positive, negative, aspect, seed, steps, cfg, denoise,],
-        outputs=[download_image,output_img, used_seed, prompt_overlay]
+        outputs=[download_image,output_img, used_seed]
     )
 
+demo.queue(concurrency_count=1)
 demo.launch(share=True, debug=True, theme=gr.themes.Soft(), css=custom_css)
