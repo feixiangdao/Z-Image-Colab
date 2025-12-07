@@ -140,8 +140,9 @@ ASPECTS = [
 
 custom_css = """
 .gradio-container { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
-#image-preview-wrapper { position: relative; }
-#prompt-overlay { position: absolute !important; inset: 0 !important; pointer-events: none; display: block; z-index: 30; margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important; overflow: visible !important; }
+#image-preview-wrapper { position: relative !important; }
+#image-preview-wrapper .styler { position: relative !important; overflow: visible !important; }
+#prompt-overlay { position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100% !important; height: 100% !important; pointer-events: none; display: block; z-index: 30; margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important; overflow: visible !important; }
 #prompt-overlay .html-container, #prompt-overlay .prose { height: 100%; padding: 0 !important; margin: 0 !important; background: transparent !important; }
 #prompt-overlay .prompt-overlay-inner { width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: flex-start; padding: 12px; opacity: 0; transition: opacity 0.18s ease-in-out; }
 #image-preview-wrapper:hover #prompt-overlay { pointer-events: auto; }
