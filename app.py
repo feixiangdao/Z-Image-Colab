@@ -141,26 +141,29 @@ ASPECTS = [
 custom_css = """
 .gradio-container { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
 #image-preview-wrapper { position: relative; }
-#prompt-overlay { position: absolute; inset: 0; pointer-events: none; display: block; z-index: 30; }
+#prompt-overlay { position: absolute !important; inset: 0 !important; pointer-events: none; display: block; z-index: 30; margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important; overflow: visible !important; }
+#prompt-overlay .html-container, #prompt-overlay .prose { height: 100%; padding: 0 !important; margin: 0 !important; background: transparent !important; }
 #prompt-overlay .prompt-overlay-inner { width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: flex-start; padding: 12px; opacity: 0; transition: opacity 0.18s ease-in-out; }
+#image-preview-wrapper:hover #prompt-overlay { pointer-events: auto; }
 #image-preview-wrapper:hover #prompt-overlay .prompt-overlay-inner { opacity: 1; }
 #prompt-overlay .prompt-overlay__panel { background: rgba(7, 11, 23, 0.76); color: #e2e8f0; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; width: min(420px, 80vw); max-height: 70vh; overflow: auto; box-shadow: 0 18px 40px rgba(0,0,0,0.45); backdrop-filter: blur(4px); pointer-events: auto; }
 .prompt-section { padding: 10px 0; border-top: 1px solid #1f2a44; }
 .prompt-section:first-of-type { border-top: none; padding-top: 0; }
 .prompt-section__title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: #9cc4ff; }
-.prompt-overlay pre { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px 0; max-height: 220px; overflow: auto; background: #0f172a; padding: 8px; border-radius: 8px; border: 1px solid #1e293b; }
+#prompt-overlay pre { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px 0; max-height: 220px; overflow: auto; background: #0f172a; padding: 8px; border-radius: 8px; border: 1px solid #1e293b; }
 .copy-btn { background: linear-gradient(90deg, #2563eb, #38bdf8); color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: 700; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35); }
 .copy-btn:hover { filter: brightness(1.05); }
 """
 
 with gr.Blocks() as demo:
-  gr.HTML("""
+  gr.HTML(f"""
 <div style=\"width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:20px 0;\">
     <h1 style=\"font-size:2.5em; margin-bottom:10px;\">Z-Image-Turbo</h1>
     <a href=\"https://github.com/Tongyi-MAI/Z-Image\" target=\"_blank\">
         <img src=\"https://img.shields.io/badge/GitHub-Z--Image-181717?logo=github&logoColor=white\"
              style=\"height:15px;\">
     </a>
+    <div style=\"margin-top:8px; font-weight:600; color:#6b7280;\">Credit</div>
 </div>
 """)
 
